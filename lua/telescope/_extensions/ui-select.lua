@@ -114,8 +114,12 @@ return require("telescope").register_extension {
       local make_ordinal = vim.F.if_nil(sopts.make_ordinal, function(e)
         return opts.format_item(e.text)
       end)
+
+      local picker_opts = __TelescopeUISelectSpecificOpts.picker_opts ~= nil
+        and __TelescopeUISelectSpecificOpts.picker_opts[vim.F.if_nil(opts.kind, "")]
+
       pickers
-        .new(topts, {
+        .new(picker_opts or topts, {
           prompt_title = string.gsub(prompt, "\n", " "),
           finder = finders.new_table {
             results = indexed_items,
@@ -147,7 +151,7 @@ return require("telescope").register_extension {
             }
             return true
           end,
-          sorter = conf.generic_sorter(topts),
+          sorter = conf.generic_sorter(picker_opts or topts),
         })
         :find()
     end
